@@ -1392,6 +1392,7 @@ export interface RawExperiments {
   layers: boolean
   topLevelAwait: boolean
 incremental?: false | { [key: string]: boolean }
+parallelCodeSplitting: boolean
 rspackFuture?: RawRspackFuture
 cache: boolean | { type: "persistent" } & RawExperimentCacheOptionsPersistent | { type: "memory" }
 }
