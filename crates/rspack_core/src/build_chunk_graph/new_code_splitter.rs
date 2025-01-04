@@ -786,7 +786,6 @@ impl CodeSplitter {
         .expect("should have module")
         .pre_order_index = Some(idx);
     }
-
     for (m, idx) in post_order_indices {
       module_graph
         .module_graph_module_by_identifier_mut(&m)
@@ -1516,28 +1515,54 @@ fn merge_chunk(chunk: ChunkDesc, existing_chunk: &mut ChunkDesc) -> Result<()> {
         (Some(_), None) => {}
         (Some(existing), Some(other)) => *existing = merge_runtime(existing, &other),
       }
-
-      // for (module, idx) in &mut existing_chunk.pre_order_indices {
-      //   if let Some(other_idx) = chunk.pre_order_indices.get(module) {
-      //     *idx = std::cmp::min(*idx, *other_idx);
-      //   }
-      // }
-      // for (module, idx) in &mut existing_chunk.post_order_indices {
-      //   if let Some(other_idx) = chunk.post_order_indices.get(module) {
-      //     *idx = std::cmp::min(*idx, *other_idx);
-      //   }
-      // }
     }
     (ChunkDesc::Chunk(existing_chunk), ChunkDesc::Chunk(chunk)) => {
       existing_chunk.modules_ordinal |= chunk.modules_ordinal;
       existing_chunk.chunk_modules.extend(chunk.chunk_modules);
       existing_chunk.incoming_blocks.extend(chunk.incoming_blocks);
       existing_chunk.outgoing_blocks.extend(chunk.outgoing_blocks);
+
       match (&mut existing_chunk.runtime, chunk.runtime) {
         (None, None) => {}
         (None, Some(other)) => existing_chunk.runtime = Some(other),
         (Some(_), None) => {}
         (Some(existing), Some(other)) => *existing = merge_runtime(existing, &other),
+      }
+
+      match (&mut existing_chunk.options, chunk.options) {
+        (None, None) => {}
+        (Some(_), None) => {}
+        (None, Some(options)) => {
+          existing_chunk.options = Some(options);
+        }
+        (Some(existing), Some(other)) => {
+          match (&mut existing.prefetch_order, other.prefetch_order) {
+            (None, None) => {}
+            (Some(_), None) => {}
+            (None, Some(other)) => existing.prefetch_order = Some(other),
+            (Some(existing), Some(other)) => {
+              *existing = std::cmp::max(*existing, other);
+            }
+          }
+
+          match (&mut existing.preload_order, other.preload_order) {
+            (None, None) => {}
+            (Some(_), None) => {}
+            (None, Some(other)) => existing.preload_order = Some(other),
+            (Some(existing), Some(other)) => {
+              *existing = std::cmp::max(*existing, other);
+            }
+          }
+
+          match (&mut existing.fetch_priority, other.fetch_priority) {
+            (None, None) => {}
+            (Some(_), None) => {}
+            (None, Some(other)) => existing.fetch_priority = Some(other),
+            (Some(existing), Some(other)) => {
+              *existing = std::cmp::max(*existing, other);
+            }
+          }
+        }
       }
 
       // for (module, idx) in &mut existing_chunk.pre_order_indices {
