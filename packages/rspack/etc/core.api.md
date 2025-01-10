@@ -1956,6 +1956,7 @@ export type Experiments = {
     css?: boolean;
     layers?: boolean;
     incremental?: boolean | Incremental;
+    parallelCodeSplitting?: boolean;
     futureDefaults?: boolean;
     rspackFuture?: RspackFutureOptions;
 };
@@ -1992,6 +1993,8 @@ export interface ExperimentsNormalized {
     lazyCompilation?: false | LazyCompilationOptions;
     // (undocumented)
     outputModule?: boolean;
+    // (undocumented)
+    parallelCodeSplitting?: boolean;
     // (undocumented)
     rspackFuture?: RspackFutureOptions;
     // (undocumented)
@@ -6486,6 +6489,7 @@ export const rspackOptions: z.ZodObject<{
             chunksRender?: boolean | undefined;
             emitAssets?: boolean | undefined;
         }>]>>;
+        parallelCodeSplitting: z.ZodOptional<z.ZodBoolean>;
         futureDefaults: z.ZodOptional<z.ZodBoolean>;
         rspackFuture: z.ZodOptional<z.ZodObject<{
             bundlerInfo: z.ZodOptional<z.ZodObject<{
@@ -6572,6 +6576,7 @@ export const rspackOptions: z.ZodObject<{
             chunksRender?: boolean | undefined;
             emitAssets?: boolean | undefined;
         } | undefined;
+        parallelCodeSplitting?: boolean | undefined;
         futureDefaults?: boolean | undefined;
         rspackFuture?: {
             bundlerInfo?: {
@@ -6638,6 +6643,7 @@ export const rspackOptions: z.ZodObject<{
             chunksRender?: boolean | undefined;
             emitAssets?: boolean | undefined;
         } | undefined;
+        parallelCodeSplitting?: boolean | undefined;
         futureDefaults?: boolean | undefined;
         rspackFuture?: {
             bundlerInfo?: {
@@ -8583,6 +8589,7 @@ export const rspackOptions: z.ZodObject<{
             chunksRender?: boolean | undefined;
             emitAssets?: boolean | undefined;
         } | undefined;
+        parallelCodeSplitting?: boolean | undefined;
         futureDefaults?: boolean | undefined;
         rspackFuture?: {
             bundlerInfo?: {
@@ -9187,6 +9194,7 @@ export const rspackOptions: z.ZodObject<{
             chunksRender?: boolean | undefined;
             emitAssets?: boolean | undefined;
         } | undefined;
+        parallelCodeSplitting?: boolean | undefined;
         futureDefaults?: boolean | undefined;
         rspackFuture?: {
             bundlerInfo?: {
